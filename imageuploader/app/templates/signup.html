@@ -1,0 +1,13 @@
+signup
+
+<form action="" method="post">
+    {% csrf_token %}
+    userName: <input type="text" name="username"> <br>
+    firstname: <input type="text" name="first"> <br>
+    lastname: <input type="text" name="last"> <br>
+    password: <input type="password" name="password" > <br>
+    Confirm Password: <input type="password" name="con_password" >  <br>
+    email:  <input type="email" name="email" > <br>
+    <input type="submit" value="Submit">
+    {{error }}
+ </form>
