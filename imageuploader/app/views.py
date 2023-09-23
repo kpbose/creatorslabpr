@@ -17,14 +17,16 @@ def signup(request):
           for i in users:
                if username in i.username:
                    j+=1
-          if password==confirm and j==0:
+          if j>0:
+              return render(request,"signup.html",{'error':' Username already exist'})
+          if password==confirm:
               myuser=User.objects.create_user(username=username,email=email,password=password)
               myuser.first_name=first
               myuser.last_name=last
               myuser.save()
               return render(request,"signin.html",{'msg':'Registered succesfully'})
           else:
-               return render(request,"signup.html",{'error':'passwords not matching or username already exist'})
+               return render(request,"signup.html",{'error':'Passwords not matched'})
     return render(request,"signup.html")
 def signin(request):
     error_message=''
@@ -41,22 +43,25 @@ def signin(request):
                     fname=valid_user.first_name
                     form = FileUploadForm()
                     allfile=UploadedFile.objects.filter(user=request.user)
-
                     return render(request,"home.html",{'fname':fname,'form':form,'allfile':allfile})
     return render(request,'signin.html',{'error_message':error_message})
 def home(request):
     allfile=UploadedFile.objects.filter(user=request.user)
+    fname=str(request.user.first_name)
     if request.method == 'POST':
         form = FileUploadForm(request.POST, request.FILES)
         if form.is_valid():
             form.instance.user=request.user
             form.save()
             allfile=UploadedFile.objects.filter(user=request.user)
-            print(allfile)
-            return render(request,'home.html',{'status':' Upload Successful','allfile':allfile})
+            return render(request,'home.html',{'fname':fname,'form':form,'status':' Upload Successful','allfile':allfile})
         else:
-            return render(request,'home.html',{'status':'Form is not valid','allfile':allfile})
+            return render(request,'home.html',{'fname':fname,'form':form,'status':'Form is not valid','allfile':allfile})
 
     else:
         form = FileUploadForm()
-    return render(request, 'home.html', {'form': form,'allfile':allfile})
+    return render(request, 'home.html', {'fname':fname,'form': form,'allfile':allfile})
+
+def signout(request):
+    logout(request)
+    return render(request,"home.html")

@@ -1,13 +1,166 @@
-signup
 
-<form action="" method="post">
-    {% csrf_token %}
-    userName: <input type="text" name="username"> <br>
-    firstname: <input type="text" name="first"> <br>
-    lastname: <input type="text" name="last"> <br>
-    password: <input type="password" name="password" > <br>
-    Confirm Password: <input type="password" name="con_password" >  <br>
-    email:  <input type="email" name="email" > <br>
-    <input type="submit" value="Submit">
-    {{error }}
- </form>
+ <!DOCTYPE html>
+ <html lang="en">
+ <head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>Sign Up</title>
+     <style>
+         
+         * {
+             margin: 0;
+             padding: 0;
+             box-sizing: border-box;
+         }
+ 
+         body {
+             font-family: Arial, sans-serif;
+             background-color: #f4f4f4;
+             display: flex;
+             justify-content: center;
+             align-items: center;
+             height: 100vh;
+         }
+ 
+         .container {
+             background-color: #fff;
+             padding: 20px;
+             border-radius: 5px;
+             box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+             width: 300px;
+         }
+ 
+         h2 {
+             text-align: center;
+             margin-bottom: 20px;
+         }
+ 
+         
+         form {
+             display: flex;
+             flex-direction: column;
+         }
+ 
+         label {
+             margin-bottom: 6px;
+         }
+ 
+         input[type="text"],
+         input[type="password"],input[type="email"] {
+             padding: 10px;
+             margin-bottom: 10px;
+             border: 1px solid #ccc;
+             border-radius: 3px;
+         }
+ 
+         input[type="submit"] {
+             background-color: #007BFF;
+             color: #fff;
+             padding: 10px;
+             border: none;
+             border-radius: 3px;
+             cursor: pointer;
+         }
+ 
+         input[type="submit"]:hover {
+             background-color: #0056b3;
+         }
+ 
+         
+         .signup-link {
+             text-align: center;
+             margin-top: 10px;
+         }
+ 
+         .signup-link a {
+             color: #007BFF;
+             text-decoration: none;
+         }
+ 
+         .signup-link a:hover {
+             text-decoration: underline;
+         }
+         .green-message {
+             color: #008000; 
+             font-size: 30px;
+             font-weight: bold;
+             text-align: center;
+         }
+         .red-message {
+             color: #f20707; 
+             font-size: 18px;
+             font-weight: bold;
+             text-align: center;
+         }
+     </style>
+     <script>
+             function validateForm() {
+            
+            var username = document.getElementById("username").value;
+            var email = document.getElementById("email").value;
+            var password = document.getElementById("password").value;
+            var confirmPassword = document.getElementById("confirmPassword").value;
+
+            // Regular expressions for validation
+            var emailRegex = /^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/;
+            var passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+
+            // Validation checks
+            if (!email.match(emailRegex)) {
+                alert("Invalid email address");
+                return false;
+            } else if (!password.match(passwordRegex)) {
+                alert("Password must contain at least 8 characters, including one uppercase letter, one lowercase letter, and one digit.");
+                return false;
+            } else if (password !== confirmPassword) {
+                alert("Passwords do not match");
+                return false;
+            }
+
+            // If all checks pass, the form is valid
+            return true;
+        }
+        
+        document.getElementById("registrationForm").addEventListener("submit", function (event) {
+        if (!validateForm()) {
+        event.preventDefault(); // Prevent form submission if validation fails
+        } else {
+        // Submit the form to the Django URL
+        this.action = ""; // Replace with your actual Django URL
+    }
+});
+        </script>
+ </head>
+ <body>
+     <div class="container">
+         <h2>Sign Up</h2>
+         <form onsubmit="validateForm()" id="registrationForm"  method="post">
+             {% csrf_token %}
+             <label for="username">Username:</label>
+             <input type="text"id="username" name="username" required>
+ 
+             <label for="password">Password:</label>
+             <input type="password" id="password" name="password" required>
+ 
+             <label for="con_password"> Confirm Password:</label>
+             <input type="password" id="confirmPassword" name="con_password" required>
+
+             <label for="firstname">First Name</label>
+             <input type="text"  name="first" required>
+ 
+             <label for="lastname">Last Name</label>
+             <input type="text"  name="last" required>
+             
+             <label for="email">Email</label>
+             <input type="email" id="email" name="email" required>
+                <br>            
+           <input type="submit" value="Sign Up">
+             <br>
+            <p class="red-message">{{error}}</p>
+         </form>
+         
+     </div>
+ </body>
+ </html>
+ 
+ 
