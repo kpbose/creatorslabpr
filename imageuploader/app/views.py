@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect
 from django.contrib.auth.models import User
 from .models import *
 from django.contrib.auth import authenticate,login,logout
-
+from .forms import *
 # Create your views here.
 def signup(request):
     if request.method=="POST":
@@ -39,7 +39,24 @@ def signin(request):
                   if valid_user is not None:
                     login(request,valid_user)
                     fname=valid_user.first_name
-                    return render(request,"home.html",{'fname':fname})
+                    form = FileUploadForm()
+                    allfile=UploadedFile.objects.filter(user=request.user)
+
+                    return render(request,"home.html",{'fname':fname,'form':form,'allfile':allfile})
     return render(request,'signin.html',{'error_message':error_message})
 def home(request):
-     return render(request,"home.html")
+    allfile=UploadedFile.objects.filter(user=request.user)
+    if request.method == 'POST':
+        form = FileUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.instance.user=request.user
+            form.save()
+            allfile=UploadedFile.objects.filter(user=request.user)
+            print(allfile)
+            return render(request,'home.html',{'status':' Upload Successful','allfile':allfile})
+        else:
+            return render(request,'home.html',{'status':'Form is not valid','allfile':allfile})
+
+    else:
+        form = FileUploadForm()
+    return render(request, 'home.html', {'form': form,'allfile':allfile})
